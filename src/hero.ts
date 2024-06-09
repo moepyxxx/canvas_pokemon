@@ -19,16 +19,16 @@ export class Hero extends Character {
     let x = this.position.target.x;
     let y = this.position.target.y;
     if (keys.ArrowUp) {
-      y -= 1;
+      y -= 2;
     }
     if (keys.ArrowDown) {
-      y += 1;
+      y += 2;
     }
     if (keys.ArrowLeft) {
-      x -= 1;
+      x -= 2;
     }
     if (keys.ArrowRight) {
-      x += 1;
+      x += 2;
     }
     this.position.set({
       x: Math.min(Math.max(x, 0), this.context2d.canvas.width - HERO_WIDTH / 2),
