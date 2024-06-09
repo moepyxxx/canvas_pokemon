@@ -9,6 +9,8 @@ const CANVAS_HEIGHT = 480;
 const HERO_WIDTH = 32;
 const HERO_HEIGHT = 32;
 
+const MAX_POKEMON_COUNT = 5;
+
 (async () => {
   const util = new CanvasUtility(
     document.getElementById("main_canvas") as HTMLCanvasElement
@@ -26,14 +28,14 @@ const HERO_HEIGHT = 32;
     32,
     "images/hero.png"
   );
-  const pokemon = new Pokemon(
-    util.context,
-    { x: 32, y: 32 },
-    { x: 0, y: 0 },
-    64,
-    64
-  );
-  await pokemon.setNewPokemon();
+
+  const pokemons = new Array<Pokemon>();
+  for (let i = 0; i < MAX_POKEMON_COUNT; i++) {
+    const pokemon = new Pokemon(util.context, { x: 32, y: 32 }, { x: 0, y: 0 });
+    await pokemon.setNewPokemon();
+    pokemons.push(pokemon);
+  }
+
   const userInput = new KeyboardInput();
 
   initialize();
@@ -51,7 +53,9 @@ const HERO_HEIGHT = 32;
     util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#eee");
 
     hero.update(userInput.keys);
-    pokemon.update();
+    pokemons.forEach((pokemon) => {
+      pokemon.update();
+    });
     requestAnimationFrame(render);
   }
 })();
