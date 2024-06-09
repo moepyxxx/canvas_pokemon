@@ -1,16 +1,17 @@
 import { Character } from "./character";
 import { Keys } from "./keyboardInput";
 import { PositionType } from "./position";
+
+const HERO_WIDTH = 32;
+const HERO_HEIGHT = 32;
 export class Hero extends Character {
   constructor(
     context: CanvasRenderingContext2D,
     position: PositionType,
     vector: PositionType,
-    width: number,
-    height: number,
     imagePath: string
   ) {
-    super(context, position, vector, width, height);
+    super(context, position, vector, HERO_WIDTH, HERO_HEIGHT);
     this.setImage(imagePath);
   }
 
@@ -30,8 +31,11 @@ export class Hero extends Character {
       x += 1;
     }
     this.position.set({
-      x,
-      y,
+      x: Math.min(Math.max(x, 0), this.context2d.canvas.width - HERO_WIDTH / 2),
+      y: Math.min(
+        Math.max(y, 0),
+        this.context2d.canvas.height - HERO_HEIGHT / 2
+      ),
     });
     this.draw();
   }

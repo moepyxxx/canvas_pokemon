@@ -24,8 +24,6 @@ const MAX_POKEMON_COUNT = 5;
     util.context,
     { x: util.canvas.width / 2 - offsetX, y: util.canvas.height / 2 - offsetY },
     { x: 0, y: 0 },
-    32,
-    32,
     "images/hero.png"
   );
 
@@ -50,7 +48,7 @@ const MAX_POKEMON_COUNT = 5;
   }
 
   function render() {
-    util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#eee");
+    util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#a7d28d");
 
     hero.update(userInput.keys);
     pokemons.forEach((pokemon) => {

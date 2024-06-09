@@ -1,3 +1,4 @@
+import { Calculate } from "./calculate";
 import { Position, PositionType } from "./position";
 
 export class Character {
@@ -8,6 +9,7 @@ export class Character {
   height: number;
   ready: boolean = false;
   image: HTMLImageElement | null = null;
+  frame: number = Calculate.getRandomNumberFromRange(1, 5);
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -48,5 +50,6 @@ export class Character {
       this.width,
       this.height
     );
+    this.frame++;
   }
 }
