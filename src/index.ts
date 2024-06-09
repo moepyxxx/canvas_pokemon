@@ -1,4 +1,5 @@
 import { CanvasUtility } from "./canvas";
+import { CharacterMapping } from "./characterMapping";
 import { Hero } from "./hero";
 import { KeyboardInput } from "./keyboardInput";
 import { Pokemon } from "./pokemon";
@@ -11,35 +12,53 @@ const HERO_HEIGHT = 32;
 
 const MAX_POKEMON_COUNT = 5;
 
+let util: CanvasUtility;
+let characterMapping: CharacterMapping;
+let hero: Hero;
+const pokemons: Pokemon[] = [];
+let userInput: KeyboardInput;
+
 (async () => {
-  const util = new CanvasUtility(
-    document.getElementById("main_canvas") as HTMLCanvasElement
-  );
-  util.canvas.width = CANVAS_WIDTH;
-  util.canvas.height = CANVAS_HEIGHT;
-
-  const offsetX = HERO_WIDTH / 2;
-  const offsetY = HERO_HEIGHT / 2;
-  const hero = new Hero(
-    util.context,
-    { x: util.canvas.width / 2 - offsetX, y: util.canvas.height / 2 - offsetY },
-    { x: 0, y: 0 },
-    "images/hero.png"
-  );
-
-  const pokemons = new Array<Pokemon>();
-  for (let i = 0; i < MAX_POKEMON_COUNT; i++) {
-    const pokemon = new Pokemon(util.context, { x: 32, y: 32 }, { x: 0, y: 0 });
-    await pokemon.setNewPokemon();
-    pokemons.push(pokemon);
-  }
-
-  const userInput = new KeyboardInput();
-
-  initialize();
+  await initialize();
   loadCheck();
 
-  function initialize() {
+  async function initialize() {
+    // canvasの初期化
+    util = new CanvasUtility(
+      document.getElementById("main_canvas") as HTMLCanvasElement
+    );
+    util.canvas.width = CANVAS_WIDTH;
+    util.canvas.height = CANVAS_HEIGHT;
+
+    // キャラクター位置情報の初期化
+    characterMapping = new CharacterMapping();
+
+    // 主人公の初期化
+    const offsetX = HERO_WIDTH / 2;
+    const offsetY = HERO_HEIGHT / 2;
+    const initialHeroPosition = {
+      x: util.canvas.width / 2 - offsetX,
+      y: util.canvas.height / 2 - offsetY,
+    };
+    hero = new Hero(
+      util.context,
+      initialHeroPosition,
+      { x: 0, y: 0 },
+      "images/hero.png"
+    );
+    characterMapping.setHeroPosition(initialHeroPosition);
+
+    // ポケモンの初期化
+    for (let i = 0; i < MAX_POKEMON_COUNT; i++) {
+      const pokemon = new Pokemon(util.context, { x: 0, y: 0 }, i);
+      const position = await pokemon.setNewPokemon();
+      pokemons.push(pokemon);
+      characterMapping.addPokemonCounter();
+      characterMapping.addPokemonPosition(i, position);
+    }
+
+    // ユーザーキーボード入力の初期化
+    userInput = new KeyboardInput();
     userInput.initialize();
   }
 
@@ -50,7 +69,7 @@ const MAX_POKEMON_COUNT = 5;
   function render() {
     util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#a7d28d");
 
-    hero.update(userInput.keys);
+    hero.update(userInput.downKeys);
     pokemons.forEach((pokemon) => {
       pokemon.update();
     });

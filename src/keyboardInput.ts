@@ -3,31 +3,45 @@ export type Keys = {
   ArrowRight: boolean;
   ArrowUp: boolean;
   ArrowDown: boolean;
+  a: boolean;
 };
 
 export class KeyboardInput {
-  private _keys: Keys;
+  private _downKeys: Keys;
+  private _upKeys: Keys;
 
   constructor() {
-    this._keys = {
+    this._downKeys = {
       ArrowLeft: false,
       ArrowRight: false,
       ArrowUp: false,
       ArrowDown: false,
+      a: false,
+    };
+    this._upKeys = {
+      ArrowLeft: false,
+      ArrowRight: false,
+      ArrowUp: false,
+      ArrowDown: false,
+      a: false,
     };
   }
 
-  get keys() {
-    return this._keys;
+  get downKeys() {
+    return this._downKeys;
+  }
+
+  get upKeys() {
+    return this._upKeys;
   }
 
   initialize() {
-    const validKeys = Object.keys(this._keys);
+    const validKeys = Object.keys(this._downKeys);
     window.addEventListener(
       "keydown",
       (e) => {
-        if (validKeys.includes(e.key as keyof typeof this._keys)) {
-          this._keys[e.key as keyof typeof this._keys] = true;
+        if (validKeys.includes(e.key as keyof typeof this._downKeys)) {
+          this._downKeys[e.key as keyof typeof this._downKeys] = true;
         }
       },
       false
@@ -35,8 +49,8 @@ export class KeyboardInput {
     window.addEventListener(
       "keyup",
       (e) => {
-        if (validKeys.includes(e.key as keyof typeof this._keys)) {
-          this._keys[e.key as keyof typeof this._keys] = false;
+        if (validKeys.includes(e.key as keyof typeof this._upKeys)) {
+          this._upKeys[e.key as keyof typeof this._upKeys] = false;
         }
       },
       false

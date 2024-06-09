@@ -13,21 +13,23 @@ export class Pokemon extends Character {
   private walkStartFrame: number | null = null;
   private workArrow: "up" | "down" | "left" | "right" = "up";
   private walkSpeed = 1;
+  private counterID: number = 0;
 
   constructor(
     context: CanvasRenderingContext2D,
-    position: PositionType,
-    vector: PositionType
+    vector: PositionType,
+    counterID: number
   ) {
-    super(context, position, vector, POKEMON_WIDTH, POKEMON_HEIGHT);
+    super(context, { x: 0, y: 0 }, vector, POKEMON_WIDTH, POKEMON_HEIGHT);
+    this.counterID = counterID;
   }
 
-  async setNewPokemon() {
+  async setNewPokemon(): Promise<PositionType> {
     const pokemon = await this.pokeAPI.fetchPokemon(
       Calculate.getRandomNumberFromRange(MIN_ID_NUMBER, MAX_ID_NUMBER)
     );
     this.setImage(pokemon.sprites.front_default);
-    this.position.set({
+    const position = {
       x: Calculate.getRandomNumberFromRange(
         POKEMON_WIDTH / 2,
         this.context2d.canvas.width
@@ -36,7 +38,10 @@ export class Pokemon extends Character {
         POKEMON_HEIGHT / 2,
         this.context2d.canvas.height
       ),
-    });
+    };
+    this.position.set(position);
+
+    return position;
   }
 
   update() {
