@@ -67,4 +67,21 @@ export class CanvasUtility {
     this.context2d.fillStyle = color;
     this.context2d.fillText(text, x, y);
   }
+
+  /**
+   * 縁を描画する
+   * @param x x座標
+   * @param y y座標
+   * @param radius 半径
+   * @param color 色
+   */
+  drawCircle(x: number, y: number, radius: number, color: string = "black") {
+    if (color != null) {
+      this.context2d.fillStyle = color;
+    }
+    this.context2d.beginPath();
+    this.context2d.arc(x, y, radius, 0.0, Math.PI * 2.0);
+    this.context2d.closePath();
+    this.context2d.fill();
+  }
 }

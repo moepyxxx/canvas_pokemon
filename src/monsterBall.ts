@@ -29,9 +29,33 @@ export class MonsterBall extends Character {
     this.position.set({ x, y });
 
     if (downKeys.a === true) {
-      this.supportText("ボールを投げろ", 150);
+      this.displaySupportText("ボールを投げろ", 150);
+      this.displayTarget();
     }
 
     this.draw();
+  }
+
+  displaySupportText(text: string, width: number) {
+    const { x, y } = this.position.target;
+    this.canvasUtil.context.font = "16px 'Arial'";
+    this.canvasUtil.context.fillStyle = "black";
+    this.canvasUtil.context.fillText(
+      text,
+      x - width / 2,
+      y - this.height,
+      width
+    );
+  }
+
+  displayTarget() {
+    const { x, y } = this.position.target;
+
+    // TODO: 100の部分をいじるとターゲットの位置が変わる
+    this.canvasUtil.drawCircle(x - 100, y, 3, "red");
+    this.canvasUtil.drawRect(x - 100 - 12 - 5, y, 10, 2, "red");
+    this.canvasUtil.drawRect(x - 100 + 12 - 5, y, 10, 2, "red");
+    this.canvasUtil.drawRect(x - 100, y - 12 - 5, 2, 10, "red");
+    this.canvasUtil.drawRect(x - 100, y + 12 - 5, 2, 10, "red");
   }
 }

@@ -53,15 +53,4 @@ export class Character {
     );
     this.frame++;
   }
-
-  supportText(text: string, width: number) {
-    this.canvasUtil.context.font = "16px 'Arial'";
-    this.canvasUtil.context.fillStyle = "black";
-    this.canvasUtil.context.fillText(
-      text,
-      this.position.target.x - width / 2,
-      this.position.target.y - this.height,
-      width
-    );
-  }
 }
