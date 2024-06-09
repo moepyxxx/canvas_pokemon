@@ -2,6 +2,7 @@ import { CanvasUtility } from "./canvas";
 import { CharacterMapping } from "./characterMapping";
 import { Hero } from "./hero";
 import { KeyboardInput } from "./keyboardInput";
+import { MonsterBall } from "./monsterBall";
 import { Pokemon } from "./pokemon";
 
 const CANVAS_WIDTH = 640;
@@ -17,6 +18,7 @@ let characterMapping: CharacterMapping;
 let hero: Hero;
 const pokemons: Pokemon[] = [];
 let userInput: KeyboardInput;
+let monsterBall: MonsterBall;
 
 (async () => {
   await initialize();
@@ -48,6 +50,12 @@ let userInput: KeyboardInput;
     );
     characterMapping.setHeroPosition(initialHeroPosition);
 
+    // モンスターボールの初期化
+    monsterBall = new MonsterBall(util.context, initialHeroPosition, {
+      x: 0,
+      y: 0,
+    });
+
     // ポケモンの初期化
     for (let i = 0; i < MAX_POKEMON_COUNT; i++) {
       const pokemon = new Pokemon(util.context, { x: 0, y: 0 }, i);
@@ -70,6 +78,11 @@ let userInput: KeyboardInput;
     util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#a7d28d");
 
     hero.update(userInput.downKeys);
+    monsterBall.update(
+      userInput.downKeys,
+      userInput.upKeys,
+      hero.position.target
+    );
     pokemons.forEach((pokemon) => {
       pokemon.update();
     });

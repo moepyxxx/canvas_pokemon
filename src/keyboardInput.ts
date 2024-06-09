@@ -42,6 +42,7 @@ export class KeyboardInput {
       (e) => {
         if (validKeys.includes(e.key as keyof typeof this._downKeys)) {
           this._downKeys[e.key as keyof typeof this._downKeys] = true;
+          this._upKeys[e.key as keyof typeof this._upKeys] = false;
         }
       },
       false
@@ -51,6 +52,7 @@ export class KeyboardInput {
       (e) => {
         if (validKeys.includes(e.key as keyof typeof this._upKeys)) {
           this._upKeys[e.key as keyof typeof this._upKeys] = false;
+          this._downKeys[e.key as keyof typeof this._downKeys] = false;
         }
       },
       false
