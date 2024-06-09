@@ -1,30 +1,46 @@
 import { CanvasUtility } from "./canvas";
 import { Hero } from "./hero";
+import { KeyboardInput } from "./keyboardInput";
+import { Pokemon } from "./pokemon";
 
 const CANVAS_WIDTH = 640;
 const CANVAS_HEIGHT = 480;
 
-(() => {
+const HERO_WIDTH = 32;
+const HERO_HEIGHT = 32;
+
+(async () => {
   const util = new CanvasUtility(
     document.getElementById("main_canvas") as HTMLCanvasElement
   );
   util.canvas.width = CANVAS_WIDTH;
   util.canvas.height = CANVAS_HEIGHT;
 
+  const offsetX = HERO_WIDTH / 2;
+  const offsetY = HERO_HEIGHT / 2;
   const hero = new Hero(
     util.context,
-    { x: 16, y: 16 },
+    { x: util.canvas.width / 2 - offsetX, y: util.canvas.height / 2 - offsetY },
     { x: 0, y: 0 },
     32,
     32,
     "images/hero.png"
   );
+  const pokemon = new Pokemon(
+    util.context,
+    { x: 32, y: 32 },
+    { x: 0, y: 0 },
+    64,
+    64
+  );
+  await pokemon.setNewPokemon();
+  const userInput = new KeyboardInput();
 
   initialize();
   loadCheck();
 
   function initialize() {
-    util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#eee");
+    userInput.initialize();
   }
 
   function loadCheck() {
@@ -32,7 +48,10 @@ const CANVAS_HEIGHT = 480;
   }
 
   function render() {
-    hero.update();
+    util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#eee");
+
+    hero.update(userInput.keys);
+    pokemon.update();
     requestAnimationFrame(render);
   }
 })();

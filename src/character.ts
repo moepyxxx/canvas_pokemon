@@ -14,15 +14,16 @@ export class Character {
     position: PositionType,
     vector: PositionType,
     width: number,
-    height: number,
-    imagePath: string
+    height: number
   ) {
     this.context2d = context;
     this.position = new Position(position);
     this.vector = new Position(vector);
     this.width = width;
     this.height = height;
+  }
 
+  setImage(path: string) {
     this.image = new Image();
     this.image.addEventListener(
       "load",
@@ -31,7 +32,7 @@ export class Character {
       },
       false
     );
-    this.image.src = imagePath;
+    this.image.src = path;
   }
 
   draw() {
