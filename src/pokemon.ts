@@ -1,4 +1,5 @@
 import { Calculate } from "./calculate";
+import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
 import { PokeAPI } from "./pokeAPI";
 import { PositionType } from "./position";
@@ -15,11 +16,7 @@ export class Pokemon extends Character {
   private walkSpeed = 1;
   private counterID: number = 0;
 
-  constructor(
-    context: CanvasRenderingContext2D,
-    vector: PositionType,
-    counterID: number
-  ) {
+  constructor(context: CanvasUtility, vector: PositionType, counterID: number) {
     super(context, { x: 0, y: 0 }, vector, POKEMON_WIDTH, POKEMON_HEIGHT);
     this.counterID = counterID;
   }
@@ -32,11 +29,11 @@ export class Pokemon extends Character {
     const position = {
       x: Calculate.getRandomNumberFromRange(
         POKEMON_WIDTH / 2,
-        this.context2d.canvas.width
+        this.canvasUtil.canvas.width
       ),
       y: Calculate.getRandomNumberFromRange(
         POKEMON_HEIGHT / 2,
-        this.context2d.canvas.height
+        this.canvasUtil.canvas.height
       ),
     };
     this.position.set(position);
@@ -101,11 +98,11 @@ export class Pokemon extends Character {
     this.position.set({
       x: Math.min(
         Math.max(x, 0),
-        this.context2d.canvas.width - POKEMON_WIDTH / 2
+        this.canvasUtil.canvas.width - POKEMON_WIDTH / 2
       ),
       y: Math.min(
         Math.max(y, 0),
-        this.context2d.canvas.height - POKEMON_HEIGHT / 2
+        this.canvasUtil.canvas.height - POKEMON_HEIGHT / 2
       ),
     });
   }

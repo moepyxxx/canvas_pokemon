@@ -43,7 +43,7 @@ let monsterBall: MonsterBall;
       y: util.canvas.height / 2 - offsetY,
     };
     hero = new Hero(
-      util.context,
+      util,
       initialHeroPosition,
       { x: 0, y: 0 },
       "images/hero.png"
@@ -51,14 +51,14 @@ let monsterBall: MonsterBall;
     characterMapping.setHeroPosition(initialHeroPosition);
 
     // モンスターボールの初期化
-    monsterBall = new MonsterBall(util.context, initialHeroPosition, {
+    monsterBall = new MonsterBall(util, initialHeroPosition, {
       x: 0,
       y: 0,
     });
 
     // ポケモンの初期化
     for (let i = 0; i < MAX_POKEMON_COUNT; i++) {
-      const pokemon = new Pokemon(util.context, { x: 0, y: 0 }, i);
+      const pokemon = new Pokemon(util, { x: 0, y: 0 }, i);
       const position = await pokemon.setNewPokemon();
       pokemons.push(pokemon);
       characterMapping.addPokemonCounter();

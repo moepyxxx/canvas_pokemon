@@ -1,8 +1,9 @@
 import { Calculate } from "./calculate";
+import { CanvasUtility } from "./canvas";
 import { Position, PositionType } from "./position";
 
 export class Character {
-  context2d: CanvasRenderingContext2D;
+  canvasUtil: CanvasUtility;
   position: Position;
   vector: Position;
   width: number;
@@ -12,13 +13,13 @@ export class Character {
   frame: number = Calculate.getRandomNumberFromRange(1, 5);
 
   constructor(
-    context: CanvasRenderingContext2D,
+    canvasUtil: CanvasUtility,
     position: PositionType,
     vector: PositionType,
     width: number,
     height: number
   ) {
-    this.context2d = context;
+    this.canvasUtil = canvasUtil;
     this.position = new Position(position);
     this.vector = new Position(vector);
     this.width = width;
@@ -43,7 +44,7 @@ export class Character {
     }
     const offsetX = this.width / 2;
     const offsetY = this.height / 2;
-    this.context2d.drawImage(
+    this.canvasUtil.context.drawImage(
       this.image,
       this.position.target.x - offsetX,
       this.position.target.y - offsetY,
@@ -51,5 +52,16 @@ export class Character {
       this.height
     );
     this.frame++;
+  }
+
+  supportText(text: string, width: number) {
+    this.canvasUtil.context.font = "16px 'Arial'";
+    this.canvasUtil.context.fillStyle = "black";
+    this.canvasUtil.context.fillText(
+      text,
+      this.position.target.x - width / 2,
+      this.position.target.y - this.height,
+      width
+    );
   }
 }
