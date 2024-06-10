@@ -7,6 +7,7 @@ const MONSTER_BALL_WIDTH = 32;
 const MONSTER_BALL_HEIGHT = 32;
 export class MonsterBall extends Character {
   private isThrowing: boolean = false;
+  private targetingFrame: number = 0;
 
   constructor(
     canvasUtil: CanvasUtility,
@@ -29,7 +30,7 @@ export class MonsterBall extends Character {
     this.position.set({ x, y });
 
     if (downKeys.a === true) {
-      this.displaySupportText("ボールを投げろ", 150);
+      this.displaySupportText("ボールを投げろ", 100);
       this.displayTarget();
     }
 
@@ -38,7 +39,7 @@ export class MonsterBall extends Character {
 
   displaySupportText(text: string, width: number) {
     const { x, y } = this.position.target;
-    this.canvasUtil.context.font = "16px 'Arial'";
+    this.canvasUtil.context.font = "12px 'Arial'";
     this.canvasUtil.context.fillStyle = "black";
     this.canvasUtil.context.fillText(
       text,
@@ -51,11 +52,19 @@ export class MonsterBall extends Character {
   displayTarget() {
     const { x, y } = this.position.target;
 
-    // TODO: 100の部分をいじるとターゲットの位置が変わる
-    this.canvasUtil.drawCircle(x - 100, y, 3, "red");
-    this.canvasUtil.drawRect(x - 100 - 12 - 5, y, 10, 2, "red");
-    this.canvasUtil.drawRect(x - 100 + 12 - 5, y, 10, 2, "red");
-    this.canvasUtil.drawRect(x - 100, y - 12 - 5, 2, 10, "red");
-    this.canvasUtil.drawRect(x - 100, y + 12 - 5, 2, 10, "red");
+    // ななめの距離
+    const r = 50;
+    // 角度からラジアンに変換
+    const theta = ((this.targetingFrame % 180) * Math.PI) / 180;
+    // targetとの距離
+    const dx = x - r * Math.cos(theta);
+    const dy = y - r * Math.sin(theta);
+
+    this.canvasUtil.drawCircle(dx, dy, 3, "red");
+    this.canvasUtil.drawRect(dx - 12 - 5, dy, 10, 2, "red");
+    this.canvasUtil.drawRect(dx + 12 - 5, dy, 10, 2, "red");
+    this.canvasUtil.drawRect(dx, dy - 12 - 5, 2, 10, "red");
+    this.canvasUtil.drawRect(dx, dy + 12 - 5, 2, 10, "red");
+    this.targetingFrame++;
   }
 }
