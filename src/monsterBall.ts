@@ -80,7 +80,8 @@ export class MonsterBall extends Character {
     // ななめの距離
     const r = 50;
     // 角度からラジアンに変換
-    const theta = ((this.targetingFrame % 360) * Math.PI) / 180;
+    // TODO: 360度にしたい
+    const theta = ((this.targetingFrame % 180) * Math.PI) / 180;
     // targetとの距離
     const dx = x - r * Math.cos(theta);
     const dy = y - r * Math.sin(theta);
