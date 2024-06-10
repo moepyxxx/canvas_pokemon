@@ -78,14 +78,17 @@ let monsterBall: MonsterBall;
     util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#a7d28d");
 
     hero.update(userInput.downKeys);
+
     monsterBall.update(
       userInput.downKeys,
       userInput.upKeys,
       hero.position.target
     );
+
     pokemons.forEach((pokemon) => {
       pokemon.update();
     });
+
     requestAnimationFrame(render);
   }
 })();

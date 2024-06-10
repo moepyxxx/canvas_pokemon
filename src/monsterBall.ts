@@ -1,13 +1,14 @@
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
 import { Keys } from "./keyboardInput";
-import { PositionType } from "./position";
+import { Position, PositionType } from "./position";
 
 const MONSTER_BALL_WIDTH = 32;
 const MONSTER_BALL_HEIGHT = 32;
 export class MonsterBall extends Character {
   private isThrowing: boolean = false;
   private targetingFrame: number = 0;
+  private throwingFrame: number = 0;
 
   constructor(
     canvasUtil: CanvasUtility,
@@ -25,13 +26,37 @@ export class MonsterBall extends Character {
   }
 
   update(downKeys: Keys, upKeys: Keys, heroPosition: PositionType) {
-    let x = heroPosition.x + 16;
-    let y = heroPosition.y - 16;
-    this.position.set({ x, y });
+    if (this.isThrowing === false) {
+      let x = heroPosition.x + 16;
+      let y = heroPosition.y - 16;
+      this.position.set({ x, y });
+    }
 
-    if (downKeys.a === true) {
+    if (downKeys.a === true && this.isThrowing === false) {
       this.displaySupportText("ボールを投げろ", 100);
       this.displayTarget();
+    }
+
+    if (upKeys.a === true) {
+      this.isThrowing = true;
+      this.throwBall();
+    }
+
+    if (this.isThrowing) {
+      const x = this.position.target.x - this.vector.target.x * 3;
+      const y = this.position.target.y - this.vector.target.y * 3;
+      this.position.set({ x, y });
+      this.throwingFrame++;
+
+      if (
+        this.position.target.x > this.canvasUtil.canvas.width ||
+        this.position.target.x < 0 ||
+        this.position.target.y > this.canvasUtil.canvas.height ||
+        this.position.target.y < 0
+      ) {
+        this.isThrowing = false;
+        this.throwingFrame = 0;
+      }
     }
 
     this.draw();
@@ -55,7 +80,7 @@ export class MonsterBall extends Character {
     // ななめの距離
     const r = 50;
     // 角度からラジアンに変換
-    const theta = ((this.targetingFrame % 180) * Math.PI) / 180;
+    const theta = ((this.targetingFrame % 360) * Math.PI) / 180;
     // targetとの距離
     const dx = x - r * Math.cos(theta);
     const dy = y - r * Math.sin(theta);
@@ -66,5 +91,15 @@ export class MonsterBall extends Character {
     this.canvasUtil.drawRect(dx, dy - 12 - 5, 2, 10, "red");
     this.canvasUtil.drawRect(dx, dy + 12 - 5, 2, 10, "red");
     this.targetingFrame++;
+  }
+
+  throwBall() {
+    const { x, y } = this.position.target;
+    const theta = ((this.targetingFrame % 180) * Math.PI) / 180;
+    const dx = x * Math.cos(theta);
+    const dy = y * Math.sin(theta);
+    const normalized = Position.calcNormal({ x: dx, y: dy });
+
+    this.vector.set({ x: normalized.target.x, y: normalized.target.y });
   }
 }

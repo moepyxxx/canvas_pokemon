@@ -27,13 +27,15 @@ export class Position {
   }
 
   constructor(target: PositionType) {
-    this.target = target;
+    this.target = {
+      x: target.x,
+      y: target.y,
+    };
   }
 
   set(target: PositionType) {
-    if (target != null) {
-      this.target = target;
-    }
+    this.target.x = target.x;
+    this.target.y = target.y;
   }
 
   distance(target: PositionType) {

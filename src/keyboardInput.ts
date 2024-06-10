@@ -51,8 +51,11 @@ export class KeyboardInput {
       "keyup",
       (e) => {
         if (validKeys.includes(e.key as keyof typeof this._upKeys)) {
-          this._upKeys[e.key as keyof typeof this._upKeys] = false;
+          this._upKeys[e.key as keyof typeof this._upKeys] = true;
           this._downKeys[e.key as keyof typeof this._downKeys] = false;
+          requestAnimationFrame(() => {
+            this._upKeys[e.key as keyof typeof this._upKeys] = false;
+          });
         }
       },
       false
