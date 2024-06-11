@@ -1,3 +1,4 @@
+import { TREE_WIDTH } from ".";
 import { Calculate } from "./calculate";
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
@@ -112,12 +113,12 @@ export class Pokemon extends Character {
     }
     this.position.set({
       x: Math.min(
-        Math.max(x, 0),
-        this.canvasUtil.canvas.width - POKEMON_WIDTH / 2
+        Math.max(x, 0 + TREE_WIDTH + POKEMON_WIDTH / 2),
+        this.canvasUtil.canvas.width - POKEMON_WIDTH / 2 - TREE_WIDTH
       ),
       y: Math.min(
-        Math.max(y, 0),
-        this.canvasUtil.canvas.height - POKEMON_HEIGHT / 2
+        Math.max(y, 0 + TREE_WIDTH + POKEMON_HEIGHT / 2),
+        this.canvasUtil.canvas.height - POKEMON_HEIGHT / 2 - TREE_WIDTH
       ),
     });
   }

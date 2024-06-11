@@ -1,3 +1,4 @@
+import { TREE_WIDTH } from ".";
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
 import { Keys } from "./keyboardInput";
@@ -38,12 +39,12 @@ export class Hero extends Character {
     }
     this.position.set({
       x: Math.min(
-        Math.max(x, 0),
-        this.canvasUtil.canvas.width - HERO_WIDTH / 2
+        Math.max(x, 0 + TREE_WIDTH + HERO_WIDTH / 2),
+        this.canvasUtil.canvas.width - HERO_WIDTH / 2 - TREE_WIDTH
       ),
       y: Math.min(
-        Math.max(y, 0),
-        this.canvasUtil.canvas.height - HERO_HEIGHT / 2
+        Math.max(y, 0 + TREE_WIDTH + HERO_HEIGHT / 2),
+        this.canvasUtil.canvas.height - HERO_HEIGHT / 2 - TREE_WIDTH
       ),
     });
     this.draw(this.images[`hero_${this.heroDirection}`] as HTMLImageElement);

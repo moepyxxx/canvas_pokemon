@@ -12,6 +12,8 @@ const CANVAS_HEIGHT = 480;
 const HERO_WIDTH = 32;
 const HERO_HEIGHT = 32;
 
+export const TREE_WIDTH = 32;
+
 const MAX_POKEMON_COUNT = 5;
 
 let util: CanvasUtility;
@@ -82,7 +84,6 @@ let backgroundObjects: Character[] = [];
 
   function initializeObjects() {
     // 🌲の初期化
-    const TREE_WIDTH = 32;
     for (
       let width = TREE_WIDTH / 2;
       width < util.canvas.width;
