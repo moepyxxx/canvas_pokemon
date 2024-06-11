@@ -1,4 +1,5 @@
 import { CanvasUtility } from "./canvas";
+import { Character } from "./character";
 import { CharacterMapping } from "./characterMapping";
 import { Hero } from "./hero";
 import { KeyboardInput } from "./keyboardInput";
@@ -19,6 +20,7 @@ let hero: Hero;
 const pokemons: Pokemon[] = [];
 let userInput: KeyboardInput;
 let monsterBall: MonsterBall;
+let backgroundObjects: Character[] = [];
 
 (async () => {
   await initialize();
@@ -34,6 +36,8 @@ let monsterBall: MonsterBall;
 
     // キャラクター位置情報の初期化
     characterMapping = new CharacterMapping();
+
+    initializeObjects();
 
     // 主人公の初期化
     const offsetX = HERO_WIDTH / 2;
@@ -76,12 +80,108 @@ let monsterBall: MonsterBall;
     userInput.initialize();
   }
 
+  function initializeObjects() {
+    // 🌲の初期化
+    const TREE_WIDTH = 32;
+    for (
+      let width = TREE_WIDTH / 2;
+      width < util.canvas.width;
+      width += TREE_WIDTH
+    ) {
+      const treeAbove = new Character(
+        util,
+        { x: width, y: TREE_WIDTH / 2 },
+        { x: 0, y: 0 },
+        TREE_WIDTH,
+        TREE_WIDTH,
+        { item: "images/tree.png" }
+      );
+      backgroundObjects.push(treeAbove);
+      const treeBelow = new Character(
+        util,
+        { x: width, y: util.canvas.height - TREE_WIDTH / 2 },
+        { x: 0, y: 0 },
+        TREE_WIDTH,
+        TREE_WIDTH,
+        { item: "images/tree.png" }
+      );
+      backgroundObjects.push(treeBelow);
+    }
+    for (
+      let height = TREE_WIDTH * 2 - TREE_WIDTH / 2;
+      height < util.canvas.height;
+      height += TREE_WIDTH
+    ) {
+      const treeLeft = new Character(
+        util,
+        { x: TREE_WIDTH / 2, y: height },
+        { x: 0, y: 0 },
+        TREE_WIDTH,
+        TREE_WIDTH,
+        { item: "images/tree.png" }
+      );
+      backgroundObjects.push(treeLeft);
+      const treeRight = new Character(
+        util,
+        { x: util.canvas.width - TREE_WIDTH / 2, y: height },
+        { x: 0, y: 0 },
+        TREE_WIDTH,
+        TREE_WIDTH,
+        { item: "images/tree.png" }
+      );
+      backgroundObjects.push(treeRight);
+    }
+
+    // 芝生の初期化
+    const GRASS_WIDTH = 32;
+    const CRASS_COUNT = 30;
+    for (let i = 0; i < CRASS_COUNT; i++) {
+      const y = Math.floor(
+        Math.random() * (util.canvas.height - TREE_WIDTH - GRASS_WIDTH)
+      );
+      const x = Math.floor(
+        Math.random() * (util.canvas.width - TREE_WIDTH - GRASS_WIDTH)
+      );
+      const grass = new Character(
+        util,
+        { x, y },
+        { x: 0, y: 0 },
+        GRASS_WIDTH,
+        GRASS_WIDTH,
+        { item: "images/grass.png" }
+      );
+      backgroundObjects.push(grass);
+    }
+  }
+
   function loadCheck() {
+    let ready = true;
+    for (const pokemon of pokemons) {
+      if (!pokemon.ready) {
+        ready = false;
+      }
+    }
+
+    for (const object of backgroundObjects) {
+      if (!object.ready) {
+        ready = false;
+      }
+    }
+
+    if (!hero.ready || !monsterBall.ready) {
+      ready = false;
+    }
+
+    if (!ready) {
+      setTimeout(loadCheck, 100);
+      return;
+    }
+
     render();
   }
 
   function render() {
-    util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#a7d28d");
+    util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#9CDF7D");
 
     hero.update(userInput.downKeys);
 
@@ -98,6 +198,10 @@ let monsterBall: MonsterBall;
       } else {
         pokemon.update();
       }
+    });
+
+    backgroundObjects.forEach((item) => {
+      item.draw(item.images["item"] as HTMLImageElement);
     });
 
     // 位置情報をマッピングし直す

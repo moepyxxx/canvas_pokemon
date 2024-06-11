@@ -30,6 +30,9 @@ export class Character {
         this.setImage(imageKeyPaths[key], key);
       });
     }
+    if (Object.keys(this.images).length === 0) {
+      this.ready = false;
+    }
   }
 
   setImage(path: string, key: string) {
