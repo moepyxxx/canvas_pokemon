@@ -20,6 +20,10 @@ export class CharacterMapping {
     return this.hero;
   }
 
+  get pokemonPositions() {
+    return this.pokemons;
+  }
+
   addPokemonPosition(counter: number, position: PositionType) {
     this.pokemons[counter] = position;
   }

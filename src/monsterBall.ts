@@ -1,10 +1,11 @@
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
 import { Keys } from "./keyboardInput";
+import { POKEMON_WIDTH } from "./pokemon";
 import { Position, PositionType } from "./position";
 
-const MONSTER_BALL_WIDTH = 32;
-const MONSTER_BALL_HEIGHT = 32;
+export const MONSTER_BALL_WIDTH = 32;
+export const MONSTER_BALL_HEIGHT = 32;
 export class MonsterBall extends Character {
   private isThrowing: boolean = false;
   private targetingFrame: number = 0;
@@ -22,10 +23,16 @@ export class MonsterBall extends Character {
       MONSTER_BALL_WIDTH,
       MONSTER_BALL_HEIGHT
     );
-    this.setImage("images/monster_ball.png");
+    this.setImage("images/monster_ball.png", "ball");
   }
 
-  update(downKeys: Keys, upKeys: Keys, heroPosition: PositionType) {
+  update(
+    downKeys: Keys,
+    upKeys: Keys,
+    heroPosition: PositionType,
+    pokemonPositions: Record<number, PositionType>
+  ): number | false {
+    let pokemonID: number | false = false;
     if (this.isThrowing === false) {
       let x = heroPosition.x + 16;
       let y = heroPosition.y - 16;
@@ -48,6 +55,12 @@ export class MonsterBall extends Character {
       this.position.set({ x, y });
       this.throwingFrame++;
 
+      pokemonID = this.isGetPokemon(pokemonPositions);
+      if (pokemonID !== false) {
+        this.isThrowing = false;
+        this.throwingFrame = 0;
+      }
+
       if (
         this.position.target.x > this.canvasUtil.canvas.width ||
         this.position.target.x < 0 ||
@@ -59,7 +72,20 @@ export class MonsterBall extends Character {
       }
     }
 
-    this.draw();
+    this.draw(this.images["ball"] as HTMLImageElement);
+
+    return pokemonID;
+  }
+
+  isGetPokemon(pokemonPositions: Record<number, PositionType>): number | false {
+    const pokemonID = Object.keys(pokemonPositions).find((key) => {
+      const distance = this.position.distance(pokemonPositions[Number(key)]);
+      if (distance < this.width + POKEMON_WIDTH / 8) {
+        return true;
+      }
+      return false;
+    });
+    return Number(pokemonID) || false;
   }
 
   displaySupportText(text: string, width: number) {

@@ -9,7 +9,7 @@ export class Character {
   width: number;
   height: number;
   ready: boolean = false;
-  image: HTMLImageElement | null = null;
+  images: Record<string, HTMLImageElement> = {};
   frame: number = Calculate.getRandomNumberFromRange(1, 5);
 
   constructor(
@@ -17,39 +17,45 @@ export class Character {
     position: PositionType,
     vector: PositionType,
     width: number,
-    height: number
+    height: number,
+    imageKeyPaths?: Record<string, string>
   ) {
     this.canvasUtil = canvasUtil;
     this.position = new Position(position);
     this.vector = new Position(vector);
     this.width = width;
     this.height = height;
+    if (imageKeyPaths) {
+      Object.keys(imageKeyPaths).forEach((key) => {
+        this.setImage(imageKeyPaths[key], key);
+      });
+    }
   }
 
-  setImage(path: string) {
-    this.image = new Image();
-    this.image.addEventListener(
+  setImage(path: string, key: string) {
+    this.images[key] = new Image();
+    this.images[key].addEventListener(
       "load",
       () => {
         this.ready = true;
       },
       false
     );
-    this.image.src = path;
+    this.images[key].src = path;
   }
 
-  draw() {
-    if (!this.image) {
+  draw(image: HTMLImageElement, width?: number, height?: number) {
+    if (!image) {
       throw new Error("image not loaded");
     }
     const offsetX = this.width / 2;
     const offsetY = this.height / 2;
     this.canvasUtil.context.drawImage(
-      this.image,
+      image,
       this.position.target.x - offsetX,
       this.position.target.y - offsetY,
-      this.width,
-      this.height
+      width ?? this.width,
+      height ?? this.height
     );
     this.frame++;
   }

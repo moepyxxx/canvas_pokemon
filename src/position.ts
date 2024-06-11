@@ -38,6 +38,10 @@ export class Position {
     this.target.y = target.y;
   }
 
+  /**
+   * 対象との距離を求める
+   * @param target
+   */
   distance(target: PositionType) {
     const x = this.target.x - target.x;
     const y = this.target.y - target.y;

@@ -46,7 +46,13 @@ let monsterBall: MonsterBall;
       util,
       initialHeroPosition,
       { x: 0, y: 0 },
-      "images/hero.png"
+      {
+        hero: "images/hero.png",
+        hero_above: "images/hero/above.png",
+        hero_below: "images/hero/below.png",
+        hero_left: "images/hero/left.png",
+        hero_right: "images/hero/right.png",
+      }
     );
     characterMapping.setHeroPosition(initialHeroPosition);
 
@@ -79,16 +85,34 @@ let monsterBall: MonsterBall;
 
     hero.update(userInput.downKeys);
 
-    monsterBall.update(
+    const pokemonID = monsterBall.update(
       userInput.downKeys,
       userInput.upKeys,
-      hero.position.target
+      characterMapping.heroPosition,
+      characterMapping.pokemonPositions
     );
 
     pokemons.forEach((pokemon) => {
-      pokemon.update();
+      if (pokemonID !== false && pokemonID === pokemon.counterID) {
+        pokemon.update(pokemonID);
+      } else {
+        pokemon.update();
+      }
     });
 
+    // 位置情報をマッピングし直す
+    reMapping();
+
     requestAnimationFrame(render);
+  }
+
+  function reMapping() {
+    const heroPosition = hero.position.target;
+    characterMapping.setHeroPosition(heroPosition);
+
+    pokemons.forEach((pokemon) => {
+      const pokemonPosition = pokemon.position.target;
+      characterMapping.addPokemonPosition(pokemon.counterID, pokemonPosition);
+    });
   }
 })();
