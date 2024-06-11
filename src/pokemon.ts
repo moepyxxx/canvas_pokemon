@@ -33,13 +33,19 @@ export class Pokemon extends Character {
     this.setImage(pokemon.sprites.front_default, "pokemon");
     this.setImage("images/monster_ball.png", "ball");
     const position = {
-      x: Calculate.getRandomNumberFromRange(
-        POKEMON_WIDTH / 2,
-        this.canvasUtil.canvas.width
+      x: Calculate.getRandomNumberExcludingRange(
+        POKEMON_WIDTH / 2 + TREE_WIDTH,
+        this.canvasUtil.canvas.width - TREE_WIDTH,
+        // 初期値に画面の中心部分にいると主人公と被るため
+        (this.canvasUtil.canvas.width / 10) * 4.5,
+        (this.canvasUtil.canvas.width / 10) * 5.5
       ),
-      y: Calculate.getRandomNumberFromRange(
-        POKEMON_HEIGHT / 2,
-        this.canvasUtil.canvas.height
+      y: Calculate.getRandomNumberExcludingRange(
+        POKEMON_HEIGHT / 2 + TREE_WIDTH,
+        this.canvasUtil.canvas.height - TREE_WIDTH,
+        // 初期値に画面の中心部分にいると主人公と被るため
+        (this.canvasUtil.canvas.height / 10) * 4.5,
+        (this.canvasUtil.canvas.height / 10) * 5.5
       ),
     };
     this.position.set(position);
