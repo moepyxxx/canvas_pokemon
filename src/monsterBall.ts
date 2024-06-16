@@ -11,6 +11,8 @@ export class MonsterBall extends Character {
   private targetingFrame: number = 0;
   private throwingFrame: number = 0;
 
+  throwBallCount: number = 0;
+
   constructor(
     canvasUtil: CanvasUtility,
     position: PositionType,
@@ -46,6 +48,7 @@ export class MonsterBall extends Character {
 
     if (upKeys.a === true) {
       this.isThrowing = true;
+      this.throwBallCount++;
       this.throwBall();
     }
 
