@@ -69,8 +69,10 @@ export class Pokemon extends Character {
     }
 
     if (args.isCollision === this.counterID || this.isRunning) {
-      this.run();
-      return;
+      if (!this.isIntoMonsterBall && !this.isGet) {
+        this.run();
+        return;
+      }
     }
 
     if (

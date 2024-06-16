@@ -25,7 +25,7 @@ export class Hero extends Character {
   ): number | false {
     const isCollision = this.isCollision(pokemonPositions);
     if (isCollision !== false) {
-      console.log("collision!");
+      // nop
     } else {
       let x = this.position.target.x;
       let y = this.position.target.y;

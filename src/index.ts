@@ -70,7 +70,7 @@ let backgroundObjects: Character[] = [];
     });
 
     // ポケモンの初期化
-    for (let i = 0; i < MAX_POKEMON_COUNT; i++) {
+    for (let i = 1; i < MAX_POKEMON_COUNT + 1; i++) {
       const pokemon = new Pokemon(util, { x: 0, y: 0 }, i);
       const position = await pokemon.setNewPokemon();
       pokemons.push(pokemon);
@@ -238,7 +238,7 @@ let backgroundObjects: Character[] = [];
 
     const [fieldInPokemons, notFieldInPikemons] = partition(
       pokemons,
-      (pokemon) => !pokemon.isGet || !pokemon.isRan
+      (pokemon) => !pokemon.isGet && !pokemon.isRan
     );
     fieldInPokemons.forEach((pokemon) => {
       characterMapping.addPokemonPosition(
@@ -260,7 +260,7 @@ let backgroundObjects: Character[] = [];
       }
     });
     const fieldInPokemons = pokemons.filter(
-      (pokemon) => !pokemon.isGet || !pokemon.isRan
+      (pokemon) => !pokemon.isGet && !pokemon.isRan
     );
     const addPokemonCount = MAX_POKEMON_COUNT - fieldInPokemons.length;
 

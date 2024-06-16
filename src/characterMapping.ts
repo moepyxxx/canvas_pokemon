@@ -27,7 +27,7 @@ export class CharacterMapping {
 
   addPokemonPosition(counter: number, position: PositionType) {
     if (this.pokemons[counter] == null) {
-      this.pokemons[counter] = position;
+      this.pokemons[counter] = { x: position.x, y: position.y };
     }
 
     this.pokemons[counter].x = position.x;
@@ -35,7 +35,13 @@ export class CharacterMapping {
   }
 
   removePokemonPosition(counter: number) {
-    delete this.pokemons[counter];
+    const newPositions: Record<number, PositionType> = Object.assign(
+      {},
+      ...Object.keys(this.pokemons)
+        .filter((key) => Number(key) !== counter)
+        .map((key) => ({ [key]: this.pokemons[Number(key)] }))
+    );
+    this.pokemons = newPositions;
   }
 
   addPokemonCounter() {
