@@ -4,15 +4,21 @@ import {
   COMMENTARY_END_WIDTH,
   COMMENTARY_START_HEIGHT,
   COMMENTARY_START_WIDTH,
+  MONSTER_BALL_MAX,
 } from "./const";
 
 export class Commentary {
   canvasUtil: CanvasUtility;
   textWidth: number = COMMENTARY_START_WIDTH + 10;
+
   histories: string[] = [];
   currentHistoryIndex: number = 0;
   firstLineHeight: number = COMMENTARY_START_HEIGHT + 50;
   secondLineHeight: number = COMMENTARY_START_HEIGHT + 70;
+
+  elapsedTime: number = 0;
+  remainMonsterBalls: number = MONSTER_BALL_MAX;
+
   constructor(canvasUtil: CanvasUtility) {
     this.canvasUtil = canvasUtil;
   }
@@ -29,13 +35,13 @@ export class Commentary {
     this.canvasUtil.drawText(
       this.textWidth,
       COMMENTARY_START_HEIGHT + 20,
-      "プレイじかん 10:00",
+      `プレイじかん ${this.formatTime(this.elapsedTime)}`,
       "black"
     );
     this.canvasUtil.drawText(
       COMMENTARY_END_WIDTH - 95,
       COMMENTARY_START_HEIGHT + 20,
-      "残りボール × 11",
+      `残りボール × ${this.remainMonsterBalls}`,
       "black"
     );
 
@@ -83,5 +89,15 @@ export class Commentary {
       "black"
     );
     this.canvasUtil.context;
+  }
+
+  formatTime(duration: number) {
+    const totalSeconds = Math.floor(duration / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+      2,
+      "0"
+    )}`;
   }
 }

@@ -8,6 +8,7 @@ import {
   HERO_HEIGHT,
   HERO_WIDTH,
   MAX_POKEMON_COUNT,
+  MONSTER_BALL_MAX,
   TREE_WIDTH,
 } from "./const";
 import { Hero } from "./hero";
@@ -24,6 +25,7 @@ let userInput: KeyboardInput;
 let monsterBall: MonsterBall;
 let backgroundObjects: Character[] = [];
 let commentary: Commentary;
+let startTime = performance.now();
 
 (async () => {
   await initialize();
@@ -194,6 +196,7 @@ let commentary: Commentary;
     );
 
     const isPokemonIntoMonsterBall = monsterBall.update(
+      MONSTER_BALL_MAX - monsterBall.throwBallCount,
       userInput.downKeys,
       userInput.upKeys,
       characterMapping.heroPosition,
@@ -233,6 +236,8 @@ let commentary: Commentary;
       item.draw(item.images["item"] as HTMLImageElement);
     });
 
+    // ステータス更新
+    updateStatus();
     commentary.update();
 
     if (hero.frame % 500 === 0) {
@@ -244,6 +249,16 @@ let commentary: Commentary;
     reMapping();
 
     requestAnimationFrame(render);
+  }
+
+  function updateStatus() {
+    const remainMonsterBalls = MONSTER_BALL_MAX - monsterBall.throwBallCount;
+
+    const currentTime = performance.now();
+    const elapsedTime = currentTime - startTime;
+
+    commentary.remainMonsterBalls = remainMonsterBalls;
+    commentary.elapsedTime = elapsedTime;
   }
 
   function reMapping() {

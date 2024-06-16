@@ -11,6 +11,7 @@ export const MIN_ID_NUMBER = 1;
 export const MAX_ID_NUMBER = 386;
 export const POKEMON_WIDTH = 64;
 export const POKEMON_HEIGHT = 64;
+export const MONSTER_BALL_MAX = 30;
 
 export const COMMENTARY_START_HEIGHT = CANVAS_HEIGHT * 0.75;
 export const COMMENTARY_END_HEIGHT = CANVAS_HEIGHT - TREE_WIDTH;

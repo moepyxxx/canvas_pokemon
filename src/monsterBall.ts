@@ -29,11 +29,17 @@ export class MonsterBall extends Character {
   }
 
   update(
+    remainMonsterBalls: number,
     downKeys: Keys,
     upKeys: Keys,
     heroPosition: PositionType,
     pokemonPositions: Record<number, PositionType>
   ): number | false {
+    if (remainMonsterBalls <= 0) {
+      // ボールがない場合は何もしない
+      return false;
+    }
+
     let pokemonID: number | false = false;
     if (this.isThrowing === false) {
       let x = heroPosition.x + 16;
