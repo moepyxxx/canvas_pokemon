@@ -136,7 +136,7 @@ let backgroundObjects: Character[] = [];
 
     // 芝生の初期化
     const GRASS_WIDTH = 32;
-    const CRASS_COUNT = 30;
+    const CRASS_COUNT = 40;
     for (let i = 0; i < CRASS_COUNT; i++) {
       const y = Math.floor(
         Math.random() * (util.canvas.height - TREE_WIDTH - GRASS_WIDTH)
