@@ -1,6 +1,7 @@
 import { Calculate } from "./calculate";
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
+import { Commentary } from "./commentary";
 import {
   COMMENTARY_END_HEIGHT,
   COMMENTARY_END_WIDTH,
@@ -33,6 +34,14 @@ export class Pokemon extends Character {
   counterID: number = 0;
   isGet: boolean = false;
 
+  private isFinish: boolean = false;
+
+  baseInfo: {
+    name: string;
+  } = {
+    name: "",
+  };
+
   constructor(context: CanvasUtility, vector: PositionType, counterID: number) {
     super(context, { x: 0, y: 0 }, vector, POKEMON_WIDTH, POKEMON_HEIGHT);
     this.counterID = counterID;
@@ -44,6 +53,7 @@ export class Pokemon extends Character {
     );
     this.setImage(pokemon.sprites.front_default, "pokemon");
     this.setImage("images/monster_ball.png", "ball");
+    this.baseInfo.name = pokemon.name;
 
     const position = this.generateRandomPosition();
     while (
@@ -106,6 +116,23 @@ export class Pokemon extends Character {
     this.walk();
     this.draw(this.images["pokemon"] as HTMLImageElement);
     this.intoMonsterBallFrame = 0;
+  }
+
+  checkPokemonStatus(): "get" | "run" | "none" {
+    // 既に確定ステータスを返している場合は何もしない
+    if (this.isFinish) {
+      return "none";
+    }
+
+    if (this.isGet) {
+      this.isFinish = true;
+      return "get";
+    }
+    if (this.isRan) {
+      this.isFinish = true;
+      return "run";
+    }
+    return "none";
   }
 
   run() {

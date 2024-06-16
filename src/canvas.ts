@@ -84,8 +84,18 @@ export class CanvasUtility {
    * @param text テキスト
    * @param color 色
    */
-  drawText(x: number, y: number, text: string, color: string = "black") {
+  drawText(
+    x: number,
+    y: number,
+    text: string,
+    color: string = "black",
+    font: string = "12px 'Arial'"
+  ) {
     this.context2d.fillStyle = color;
+    this.context2d.font = "12px 'Arial'";
+    if (font != null) {
+      this.context2d.font = font;
+    }
     this.context2d.fillText(text, x, y);
   }
 

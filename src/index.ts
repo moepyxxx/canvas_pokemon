@@ -218,6 +218,15 @@ let commentary: Commentary;
         args.isCollision = isCollision;
       }
       pokemon.update(args);
+      const status = pokemon.checkPokemonStatus();
+      if (status === "get") {
+        commentary.pushHistory(`やった、${pokemon.baseInfo.name}をつかまえた`);
+      }
+      if (status === "run") {
+        commentary.pushHistory(
+          `あっ、${pokemon.baseInfo.name}はにげてしまった`
+        );
+      }
     });
 
     backgroundObjects.forEach((item) => {
