@@ -21,4 +21,9 @@ export class Calculate {
 
     return randomNum;
   }
+
+  // 0~1の範囲で指定した確率でtrueを返す
+  static percentage(num: number) {
+    return Math.random() < num;
+  }
 }

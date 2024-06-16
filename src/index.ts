@@ -5,6 +5,7 @@ import { Hero } from "./hero";
 import { KeyboardInput } from "./keyboardInput";
 import { MonsterBall } from "./monsterBall";
 import { Pokemon } from "./pokemon";
+import { partition } from "lodash-es";
 
 const CANVAS_WIDTH = 640;
 const CANVAS_HEIGHT = 480;
@@ -184,9 +185,12 @@ let backgroundObjects: Character[] = [];
   function render() {
     util.drawRect(0, 0, util.canvas.width, util.canvas.height, "#9CDF7D");
 
-    hero.update(userInput.downKeys);
+    const isCollision = hero.update(
+      userInput.downKeys,
+      characterMapping.pokemonPositions
+    );
 
-    const pokemonID = monsterBall.update(
+    const isPokemonIntoMonsterBall = monsterBall.update(
       userInput.downKeys,
       userInput.upKeys,
       characterMapping.heroPosition,
@@ -194,16 +198,33 @@ let backgroundObjects: Character[] = [];
     );
 
     pokemons.forEach((pokemon) => {
-      if (pokemonID !== false && pokemonID === pokemon.counterID) {
-        pokemon.update(pokemonID);
-      } else {
-        pokemon.update();
+      const args: {
+        isCollision: number | false;
+        isPokemonIntoMonsterBall: number | false;
+      } = {
+        isCollision: false,
+        isPokemonIntoMonsterBall: false,
+      };
+      if (
+        isPokemonIntoMonsterBall !== false &&
+        isPokemonIntoMonsterBall === pokemon.counterID
+      ) {
+        args.isPokemonIntoMonsterBall = isPokemonIntoMonsterBall;
       }
+      if (isCollision !== false && isCollision === pokemon.counterID) {
+        args.isCollision = isCollision;
+      }
+      pokemon.update(args);
     });
 
     backgroundObjects.forEach((item) => {
       item.draw(item.images["item"] as HTMLImageElement);
     });
+
+    if (hero.frame % 500 === 0) {
+      // フレームに1回ポケモンの再生成を行う
+      checkRegeneratePokemon();
+    }
 
     // 位置情報をマッピングし直す
     reMapping();
@@ -215,9 +236,44 @@ let backgroundObjects: Character[] = [];
     const heroPosition = hero.position.target;
     characterMapping.setHeroPosition(heroPosition);
 
-    pokemons.forEach((pokemon) => {
-      const pokemonPosition = pokemon.position.target;
-      characterMapping.addPokemonPosition(pokemon.counterID, pokemonPosition);
+    const [fieldInPokemons, notFieldInPikemons] = partition(
+      pokemons,
+      (pokemon) => !pokemon.isGet || !pokemon.isRan
+    );
+    fieldInPokemons.forEach((pokemon) => {
+      characterMapping.addPokemonPosition(
+        pokemon.counterID,
+        pokemon.position.target
+      );
     });
+    notFieldInPikemons.forEach((pokemon) => {
+      characterMapping.removePokemonPosition(pokemon.counterID);
+    });
+  }
+
+  async function checkRegeneratePokemon() {
+    let largestCounterID = 0;
+
+    pokemons.forEach((pokemon) => {
+      if (pokemon.counterID > largestCounterID) {
+        largestCounterID = pokemon.counterID;
+      }
+    });
+    const fieldInPokemons = pokemons.filter(
+      (pokemon) => !pokemon.isGet || !pokemon.isRan
+    );
+    const addPokemonCount = MAX_POKEMON_COUNT - fieldInPokemons.length;
+
+    if (addPokemonCount <= 0) {
+      return;
+    }
+
+    for (let i = 1; i <= addPokemonCount; i++) {
+      const pokemon = new Pokemon(util, { x: 0, y: 0 }, largestCounterID + i);
+      const position = await pokemon.setNewPokemon();
+      pokemons.push(pokemon);
+      characterMapping.addPokemonCounter();
+      characterMapping.addPokemonPosition(i, position);
+    }
   }
 })();

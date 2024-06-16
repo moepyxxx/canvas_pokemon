@@ -13,7 +13,8 @@ export class CharacterMapping {
   }
 
   setHeroPosition(position: PositionType) {
-    this.hero = position;
+    this.hero.x = position.x;
+    this.hero.y = position.y;
   }
 
   get heroPosition() {
@@ -25,7 +26,12 @@ export class CharacterMapping {
   }
 
   addPokemonPosition(counter: number, position: PositionType) {
-    this.pokemons[counter] = position;
+    if (this.pokemons[counter] == null) {
+      this.pokemons[counter] = position;
+    }
+
+    this.pokemons[counter].x = position.x;
+    this.pokemons[counter].y = position.y;
   }
 
   removePokemonPosition(counter: number) {

@@ -16,10 +16,17 @@ export class Pokemon extends Character {
   private walkStartFrame: number | null = null;
   private workArrow: "up" | "down" | "left" | "right" = "up";
   private walkSpeed = 1;
-  counterID: number = 0;
+
   private isIntoMonsterBall: boolean = false;
   private intoMonsterBallFrame: number = 0;
-  private isGet: boolean = false;
+
+  private runningDirection: "up" | "down" | "left" | "right" | null = null;
+  isRunning: boolean = false;
+  isRan: boolean = false;
+  private runningFrame: number = 0;
+
+  counterID: number = 0;
+  isGet: boolean = false;
 
   constructor(context: CanvasUtility, vector: PositionType, counterID: number) {
     super(context, { x: 0, y: 0 }, vector, POKEMON_WIDTH, POKEMON_HEIGHT);
@@ -53,12 +60,23 @@ export class Pokemon extends Character {
     return position;
   }
 
-  update(getPokemonID?: number) {
-    if (this.isGet) {
+  update(args: {
+    isPokemonIntoMonsterBall: number | false;
+    isCollision: number | false;
+  }) {
+    if (this.isGet || this.isRan) {
       return;
     }
 
-    if (getPokemonID === this.counterID || this.isIntoMonsterBall) {
+    if (args.isCollision === this.counterID || this.isRunning) {
+      this.run();
+      return;
+    }
+
+    if (
+      args.isPokemonIntoMonsterBall === this.counterID ||
+      this.isIntoMonsterBall
+    ) {
       this.intoMonsterBall();
       return;
     }
@@ -66,6 +84,64 @@ export class Pokemon extends Character {
     this.walk();
     this.draw(this.images["pokemon"] as HTMLImageElement);
     this.intoMonsterBallFrame = 0;
+  }
+
+  run() {
+    this.isRunning = true;
+
+    // 最初はランダムに逃げる方向を決める
+    if (this.runningDirection === null) {
+      const x = this.position.target.x;
+      const y = this.position.target.y;
+      const isRunningY = Calculate.percentage(0.5);
+      if (isRunningY) {
+        if (y > this.canvasUtil.canvas.height / 2) {
+          this.runningDirection = "up";
+        } else {
+          this.runningDirection = "down";
+        }
+      } else {
+        if (x > this.canvasUtil.canvas.width / 2) {
+          this.runningDirection = "left";
+        } else {
+          this.runningDirection = "right";
+        }
+      }
+    }
+
+    // すでに終点まで走っていたら終了
+    if (
+      this.position.target.x < 0 ||
+      this.position.target.x > this.canvasUtil.canvas.width ||
+      this.position.target.y < 0 ||
+      this.position.target.y > this.canvasUtil.canvas.height
+    ) {
+      this.isRunning = false;
+      this.runningDirection = null;
+      this.isRan = true;
+      this.runningFrame = 0;
+      return;
+    }
+
+    const x = this.position.target.x;
+    const y = this.position.target.y;
+    const runSpeed = 5;
+    switch (this.runningDirection) {
+      case "up":
+        this.position.set({ x, y: y - runSpeed });
+        break;
+      case "down":
+        this.position.set({ x, y: y + runSpeed });
+        break;
+      case "left":
+        this.position.set({ x: x - runSpeed, y });
+        break;
+      case "right":
+        this.position.set({ x: x + runSpeed, y });
+        break;
+    }
+    this.runningFrame++;
+    this.draw(this.images["pokemon"] as HTMLImageElement);
   }
 
   walk() {
@@ -178,6 +254,16 @@ export class Pokemon extends Character {
       this.canvasUtil.context.restore();
       this.intoMonsterBallFrame++;
       return;
+    }
+
+    if (this.intoMonsterBallFrame === 399) {
+      // ゲットできない時もある
+      const isGet = Calculate.percentage(0.5);
+      if (!isGet) {
+        this.isIntoMonsterBall = false;
+        this.intoMonsterBallFrame = 0;
+        return;
+      }
     }
 
     // キラキラが出る
