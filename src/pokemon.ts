@@ -125,23 +125,67 @@ export class Pokemon extends Character {
       return;
     }
 
-    const x = this.position.target.x;
-    const y = this.position.target.y;
-    const runSpeed = 5;
-    switch (this.runningDirection) {
-      case "up":
-        this.position.set({ x, y: y - runSpeed });
-        break;
-      case "down":
-        this.position.set({ x, y: y + runSpeed });
-        break;
-      case "left":
-        this.position.set({ x: x - runSpeed, y });
-        break;
-      case "right":
-        this.position.set({ x: x + runSpeed, y });
-        break;
+    // 驚きのアニメーション
+    if (this.runningFrame > 20 && this.runningFrame < 60) {
+      // フレーム30の時に少しyが上に上がるようなイメージ
+      const radians = (Math.PI * this.runningFrame) / 40;
+      const y = 1 * Math.sin(radians);
+
+      this.position.set({
+        x: this.position.target.x,
+        y: this.position.target.y - y,
+      });
     }
+
+    // 焦りのアニメーション
+    if (this.runningFrame % 80 < 40) {
+      this.canvasUtil.drawRect(
+        this.position.target.x,
+        this.position.target.y - this.height / 2 - 8,
+        2,
+        10,
+        "gray"
+      );
+      this.canvasUtil.context.save();
+      this.canvasUtil.context.translate(
+        this.position.target.x,
+        this.position.target.y - this.height / 2 - 8
+      );
+      this.canvasUtil.context.rotate((30 * Math.PI) / 180);
+      this.canvasUtil.drawRect(10, 0, 2, 6, "gray");
+      this.canvasUtil.context.restore();
+
+      this.canvasUtil.context.save();
+      this.canvasUtil.context.translate(
+        this.position.target.x,
+        this.position.target.y - this.height / 2 - 8
+      );
+      this.canvasUtil.context.rotate((-30 * Math.PI) / 180);
+      this.canvasUtil.drawRect(-10, 0, 2, 6, "gray");
+      this.canvasUtil.context.restore();
+    }
+
+    if (this.runningFrame > 80) {
+      // 逃げる
+      const x = this.position.target.x;
+      const y = this.position.target.y;
+      const runSpeed = 2.5;
+      switch (this.runningDirection) {
+        case "up":
+          this.position.set({ x, y: y - runSpeed });
+          break;
+        case "down":
+          this.position.set({ x, y: y + runSpeed });
+          break;
+        case "left":
+          this.position.set({ x: x - runSpeed, y });
+          break;
+        case "right":
+          this.position.set({ x: x + runSpeed, y });
+          break;
+      }
+    }
+
     this.runningFrame++;
     this.draw(this.images["pokemon"] as HTMLImageElement);
   }
