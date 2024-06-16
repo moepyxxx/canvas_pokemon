@@ -1,7 +1,7 @@
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
+import { POKEMON_WIDTH } from "./const";
 import { Keys } from "./keyboardInput";
-import { POKEMON_WIDTH } from "./pokemon";
 import { Position, PositionType } from "./position";
 
 export const MONSTER_BALL_WIDTH = 32;

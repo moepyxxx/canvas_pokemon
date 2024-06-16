@@ -1,15 +1,20 @@
-import { TREE_WIDTH } from ".";
 import { Calculate } from "./calculate";
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
+import {
+  COMMENTARY_END_HEIGHT,
+  COMMENTARY_END_WIDTH,
+  COMMENTARY_START_HEIGHT,
+  COMMENTARY_START_WIDTH,
+  MAX_ID_NUMBER,
+  MIN_ID_NUMBER,
+  POKEMON_HEIGHT,
+  POKEMON_WIDTH,
+  TREE_WIDTH,
+} from "./const";
 import { MONSTER_BALL_HEIGHT, MONSTER_BALL_WIDTH } from "./monsterBall";
 import { PokeAPI } from "./pokeAPI";
 import { PositionType } from "./position";
-
-const MIN_ID_NUMBER = 1;
-const MAX_ID_NUMBER = 386;
-export const POKEMON_WIDTH = 64;
-const POKEMON_HEIGHT = 64;
 
 export class Pokemon extends Character {
   private pokeAPI = new PokeAPI();
@@ -39,25 +44,40 @@ export class Pokemon extends Character {
     );
     this.setImage(pokemon.sprites.front_default, "pokemon");
     this.setImage("images/monster_ball.png", "ball");
-    const position = {
+
+    const position = this.generateRandomPosition();
+    while (
+      position.x > COMMENTARY_START_WIDTH &&
+      position.x < COMMENTARY_END_WIDTH &&
+      position.y > COMMENTARY_START_HEIGHT &&
+      position.y < COMMENTARY_END_HEIGHT
+    ) {
+      const { x, y } = this.generateRandomPosition();
+      position.x = x;
+      position.y = y;
+    }
+    this.position.set(position);
+
+    return position;
+  }
+
+  generateRandomPosition(): PositionType {
+    return {
       x: Calculate.getRandomNumberExcludingRange(
         POKEMON_WIDTH / 2 + TREE_WIDTH,
         this.canvasUtil.canvas.width - TREE_WIDTH,
         // 初期値に画面の中心部分にいると主人公と被るため
-        (this.canvasUtil.canvas.width / 10) * 4.5,
-        (this.canvasUtil.canvas.width / 10) * 5.5
+        (this.canvasUtil.canvas.width / 10) * 4,
+        (this.canvasUtil.canvas.width / 10) * 6
       ),
       y: Calculate.getRandomNumberExcludingRange(
         POKEMON_HEIGHT / 2 + TREE_WIDTH,
         this.canvasUtil.canvas.height - TREE_WIDTH,
         // 初期値に画面の中心部分にいると主人公と被るため
-        (this.canvasUtil.canvas.height / 10) * 4.5,
-        (this.canvasUtil.canvas.height / 10) * 5.5
+        (this.canvasUtil.canvas.height / 10) * 4,
+        (this.canvasUtil.canvas.height / 10) * 6
       ),
     };
-    this.position.set(position);
-
-    return position;
   }
 
   update(args: {
@@ -239,16 +259,8 @@ export class Pokemon extends Character {
         }
       }
     }
-    this.position.set({
-      x: Math.min(
-        Math.max(x, 0 + TREE_WIDTH + POKEMON_WIDTH / 2),
-        this.canvasUtil.canvas.width - POKEMON_WIDTH / 2 - TREE_WIDTH
-      ),
-      y: Math.min(
-        Math.max(y, 0 + TREE_WIDTH + POKEMON_HEIGHT / 2),
-        this.canvasUtil.canvas.height - POKEMON_HEIGHT / 2 - TREE_WIDTH
-      ),
-    });
+    const { x: finalX, y: finalY } = this.validPosition(x, y);
+    this.position.set({ x: finalX, y: finalY });
   }
 
   intoMonsterBall() {

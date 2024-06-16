@@ -1,5 +1,12 @@
 import { Calculate } from "./calculate";
 import { CanvasUtility } from "./canvas";
+import {
+  COMMENTARY_END_HEIGHT,
+  COMMENTARY_END_WIDTH,
+  COMMENTARY_START_HEIGHT,
+  COMMENTARY_START_WIDTH,
+  TREE_WIDTH,
+} from "./const";
 import { Position, PositionType } from "./position";
 
 export class Character {
@@ -61,5 +68,25 @@ export class Character {
       height ?? this.height
     );
     this.frame++;
+  }
+
+  validPosition(x: number, y: number): PositionType {
+    let minX = 0 + TREE_WIDTH + this.width / 2;
+    let maxX = this.canvasUtil.canvas.width - this.width / 2 - TREE_WIDTH;
+    let minY = 0 + TREE_WIDTH + this.height / 2;
+    let maxY = this.canvasUtil.canvas.height - this.height / 2 - TREE_WIDTH;
+
+    if (x > COMMENTARY_START_WIDTH && x < COMMENTARY_END_WIDTH) {
+      maxY = COMMENTARY_START_HEIGHT - this.height / 2;
+    }
+
+    if (y > COMMENTARY_START_HEIGHT && y < COMMENTARY_END_HEIGHT) {
+      minX = COMMENTARY_END_WIDTH + this.width / 2;
+    }
+
+    return {
+      x: Math.min(Math.max(x, minX), maxX),
+      y: Math.min(Math.max(y, minY), maxY),
+    };
   }
 }

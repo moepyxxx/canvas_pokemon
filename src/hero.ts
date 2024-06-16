@@ -1,12 +1,18 @@
-import { TREE_WIDTH } from ".";
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
+import {
+  COMMENTARY_END_HEIGHT,
+  COMMENTARY_END_WIDTH,
+  COMMENTARY_START_HEIGHT,
+  COMMENTARY_START_WIDTH,
+  HERO_HEIGHT,
+  HERO_WIDTH,
+  POKEMON_WIDTH,
+  TREE_WIDTH,
+} from "./const";
 import { Keys } from "./keyboardInput";
-import { POKEMON_WIDTH } from "./pokemon";
 import { PositionType } from "./position";
 
-const HERO_WIDTH = 32;
-const HERO_HEIGHT = 32;
 export class Hero extends Character {
   heroDirection: "above" | "below" | "left" | "right" = "below";
 
@@ -46,16 +52,8 @@ export class Hero extends Character {
         x += 2;
       }
 
-      this.position.set({
-        x: Math.min(
-          Math.max(x, 0 + TREE_WIDTH + HERO_WIDTH / 2),
-          this.canvasUtil.canvas.width - HERO_WIDTH / 2 - TREE_WIDTH
-        ),
-        y: Math.min(
-          Math.max(y, 0 + TREE_WIDTH + HERO_HEIGHT / 2),
-          this.canvasUtil.canvas.height - HERO_HEIGHT / 2 - TREE_WIDTH
-        ),
-      });
+      const { x: finalX, y: finalY } = this.validPosition(x, y);
+      this.position.set({ x: finalX, y: finalY });
     }
 
     this.draw(this.images[`hero_${this.heroDirection}`] as HTMLImageElement);

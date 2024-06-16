@@ -47,6 +47,27 @@ export class CanvasUtility {
   }
 
   /**
+   * 矩形（線）を描画する
+   * @param x x座標
+   * @param y y座標
+   * @param width 横幅
+   * @param height 高さ
+   * @param color 色
+   */
+  strokeRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    color: string
+  ) {
+    if (color != null) {
+      this.context2d.strokeStyle = color;
+    }
+    this.context2d.strokeRect(x, y, width, height);
+  }
+
+  /**
    * 画像を描画する
    * @param x x座標
    * @param y y座標

@@ -1,21 +1,20 @@
 import { CanvasUtility } from "./canvas";
 import { Character } from "./character";
 import { CharacterMapping } from "./characterMapping";
+import { Commentary } from "./commentary";
+import {
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  HERO_HEIGHT,
+  HERO_WIDTH,
+  MAX_POKEMON_COUNT,
+  TREE_WIDTH,
+} from "./const";
 import { Hero } from "./hero";
 import { KeyboardInput } from "./keyboardInput";
 import { MonsterBall } from "./monsterBall";
 import { Pokemon } from "./pokemon";
 import { partition } from "lodash-es";
-
-const CANVAS_WIDTH = 640;
-const CANVAS_HEIGHT = 480;
-
-const HERO_WIDTH = 32;
-const HERO_HEIGHT = 32;
-
-export const TREE_WIDTH = 32;
-
-const MAX_POKEMON_COUNT = 5;
 
 let util: CanvasUtility;
 let characterMapping: CharacterMapping;
@@ -24,6 +23,7 @@ const pokemons: Pokemon[] = [];
 let userInput: KeyboardInput;
 let monsterBall: MonsterBall;
 let backgroundObjects: Character[] = [];
+let commentary: Commentary;
 
 (async () => {
   await initialize();
@@ -41,6 +41,9 @@ let backgroundObjects: Character[] = [];
     characterMapping = new CharacterMapping();
 
     initializeObjects();
+
+    // 実況コメントを初期化
+    commentary = new Commentary(util);
 
     // 主人公の初期化
     const offsetX = HERO_WIDTH / 2;
@@ -220,6 +223,8 @@ let backgroundObjects: Character[] = [];
     backgroundObjects.forEach((item) => {
       item.draw(item.images["item"] as HTMLImageElement);
     });
+
+    commentary.update();
 
     if (hero.frame % 500 === 0) {
       // フレームに1回ポケモンの再生成を行う
