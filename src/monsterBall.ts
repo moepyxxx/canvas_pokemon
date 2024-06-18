@@ -59,8 +59,8 @@ export class MonsterBall extends Character {
     }
 
     if (this.isThrowing) {
-      const x = this.position.target.x - this.vector.target.x * 3;
-      const y = this.position.target.y - this.vector.target.y * 3;
+      const x = this.position.target.x - this.vector.target.x * 5;
+      const y = this.position.target.y - this.vector.target.y * 5;
       this.position.set({ x, y });
       this.throwingFrame++;
 

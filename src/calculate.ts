@@ -9,7 +9,6 @@ export class Calculate {
     excludeMin: number,
     excludeMax: number
   ): number {
-    // Check if the exclusion range is valid within the min-max range
     if (excludeMin > excludeMax || excludeMin < min || excludeMax > max) {
       throw new Error("Invalid exclusion range");
     }

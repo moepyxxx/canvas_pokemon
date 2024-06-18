@@ -21,7 +21,7 @@ export class Pokemon extends Character {
   private pokeAPI = new PokeAPI();
   private walkStartFrame: number | null = null;
   private workArrow: "up" | "down" | "left" | "right" = "up";
-  private walkSpeed = 1;
+  private walkSpeed = 2;
 
   private isIntoMonsterBall: boolean = false;
   private intoMonsterBallFrame: number = 0;
@@ -216,7 +216,7 @@ export class Pokemon extends Character {
       // 逃げる
       const x = this.position.target.x;
       const y = this.position.target.y;
-      const runSpeed = 2.5;
+      const runSpeed = 3.5;
       switch (this.runningDirection) {
         case "up":
           this.position.set({ x, y: y - runSpeed });
